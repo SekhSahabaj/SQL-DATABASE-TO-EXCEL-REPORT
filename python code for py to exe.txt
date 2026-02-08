@@ -1,0 +1,1 @@
+python -m PyInstaller --onefile --windowed --icon=logo.ico --add-data "logo.png:." --add-data "logo.ico:." --add-data "Report_Template.xlsx:." --hidden-import=pyodbc --hidden-import=sqlalchemy.dialects.mssql main.py
