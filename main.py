@@ -65,7 +65,7 @@ DATABASES = {
         "password": "admin"
     }
 }
-
+# ================= DATABASE TABLE CONFIG =================
 DATABASE_TABLES = {
     "KINLEY_MIS_DB": ["CP_CPK", "Mis_mean_stdev", "mis_tab"],
     "KINLEY_RO_DB": ["all_data", "RIO_DATA", "RO_CP_CPK", "RO_mean_stdev", "ro_tab", "TOTALIZER"]
@@ -300,3 +300,4 @@ class App:
 root = tk.Tk()
 App(root)
 root.mainloop()
+
