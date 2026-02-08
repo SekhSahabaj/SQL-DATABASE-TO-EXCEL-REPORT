@@ -1,0 +1,112 @@
+Dim conn, rst, SQL_Table
+Dim MyDate, MyTime, Datum
+On Error Resume Next
+Set conn = CreateObject("ADODB.Connection")
+Set rst = CreateObject("ADODB.Recordset")
+'Open data source - Datenquelle öffnen
+conn.Open "Provider=MSDASQL;DSN=ENE_2401_RO_SERVER;UID=;PWD=;" 'DSN= Name of the ODBC database - DSN= Name der ODBC-Datenbank
+'Error routine - Fehlerroutine
+If Err.Number <> 0 Then
+	ShowSystemAlarm "Error #" & Err.Number & " " & Err.Description
+	Err.Clear
+	Set conn = Nothing 
+	Exit Sub
+End If
+
+MyDate = Date
+MyTime = Time
+Datum = MyDate & " " & MyTime
+
+SQL_Table = "INSERT INTO [KINLEY_RO_DB].[dbo].[all_data] (" & _
+    "DateAndTime, RO_RUN_1, INLET_MICRON, HPP_1_SUCTION,  " & _
+    "FIRST_INTER_1, FIRST_INTER_2, FIRST_REJECT, RO_RUN_2, HPP_2_SUCTION, " & _
+    "SECOND_PASS_FEED, SECOND_PASS_INTER_1, SECOND_PASS_INTER_2, SECOND_PASS_REJECT, " & _
+    "RO_RUN_3, RO_ORP, FIRST_FEED_PH, FIRST_PRMT_COND, FIRST_FEED_COND, " & _
+    "SECOND_FEED_PH, SECOND_PRMD_PH, SECOND_PRMT_COND, RO_RUN_4, " & _
+    "FIRST_FEED_FLOW, FIRST_REJECT_FLOW, FIRST_PERMEATED_FLOW, " & _
+    "SECOND_FEED_FLOW, SECOND_REJECT_FLOW, SECOND_PERMEATED_FLOW, " & _
+    "RO_RUN_5, HPP_1_PUMP, HPP_2_PUMP, DOSING_PUMP, MIS_PRD_MODE_1, " & _
+    "PRODUCTION_1, WATER_REQ_1, FEED_FLOW, INLET_COND, OUTLET_COND, " & _
+    "PROCESSES_FLOW, OZONE_CONC, OZONE_TANK_LEVEL, CONTACT_TIME, " & _
+    "PACK_SIZE_1, MIS_PRD_MODE_2, PRODUCTION_2, WATER_REQ_2, PACK_SIZE_2, " & _
+    "PTP_BIG, PTP_SMALL, MODULATING_VALVE, DOSING_1_Ca, DOSING_2_Ca, " & _
+    "DOSING_3_Ca, DOSING_4_Mg, DOSING_5_Mg, DOSING_6_Mg, ROTO_CIP_REQ, " & _
+    "RO_TO_ROUGHT_ACTIVE, CIP_TO_START, CIP_TO_RUN, CIP_TO_HOT_WATER, " & _
+    "RO_TO_PUMP_RUN, PUMP_FLOW, TANK_LEVEL, TANK_LOW, CIP_TO_CIP_COMPLETE, CIP_TO_CIP_ALARM, RO_RUNTIME, RO_IDLE_TIME," & _
+    "RO_DRAIN_TIME) VALUES ('" & Datum & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUN_PERMS").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_FEED_MICRON_INLET_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("HPP_1_SUCTION_PRESSURE_SCALED_OUT").Read & "'," & _
+    "'" & HMIRuntime.Tags("1ST_PASS_INERMEDIATE_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_INTERMEDIATE_2_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_REJECT_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUN_PERMS").Read & "', " & _
+    "'" & HMIRuntime.Tags("HPP_2_SUCTION_SCALED").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_INTERMEDIATE_2_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_INTERMEDIATE_PRESSURE_SCLAE").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_INTERMEDIATE_2_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_REJECT_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUN_PERMS").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_ORP").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_FEED_PH_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_PERMEATE_CONDUCTIVITY_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_FEED_CONDUCTIVITY_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_FEED_PH_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_PERMEATE_PH_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_PERMEATE_CONDUCTIVITY_SCALED").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUN_PERMS").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_FEED_FM_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_REJECT_FM_SCLAED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("1ST_PASS_PERMEATE_FM_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_FEED_FM_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_REJECT_FM_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_PERMEATE_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUN_PERMS").Read & "', " & _
+    "'" & HMIRuntime.Tags("HPP_1_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("HPP_2_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("2ND_PASS_PH_CORRECTION_DOSING_PUMP_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("PRODUCTION_MODE").Read & "', " & _
+    "'" & HMIRuntime.Tags("O3_T_MIS_PRODUCTION_MODE").Read & "', " & _
+    "'" & HMIRuntime.Tags("O3_T_MIS_WATER_REQUEST").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_FEED_FLOW").Read & "', " & _
+    "'" & HMIRuntime.Tags("CONDUCTIVITY_2").Read & "', " & _
+    "'" & HMIRuntime.Tags("CONDUCTIVITY_1").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_PROCESSES_FLOW_METER").Read & "', " & _
+    "'" & HMIRuntime.Tags("OZONE_CONC").Read & "', " & _
+    "'" & HMIRuntime.Tags("OZONE_TO_MIS_OZONE_TANK_LEVEL").Read & "', " & _
+    "'" & HMIRuntime.Tags("OZONE_TO_MIS_CONTAC_TIME").Read & "', " & _
+    "'" & HMIRuntime.Tags("OZONE_TO_MIS_PACK_SIZE").Read & "', " & _
+    "'" & HMIRuntime.Tags("PRODUCTION_MODE").Read & "', " & _
+    "'" & HMIRuntime.Tags("O3_T_MIS_PRODUCTION_MODE").Read & "', " & _
+    "'" & HMIRuntime.Tags("O3_T_MIS_WATER_REQUEST").Read & "', " & _
+    "'" & HMIRuntime.Tags("OZONE_TO_MIS_PACK_SIZE").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_TREATED_WATER_PUMP_BIG_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_TREATED_WATER_PUMP_SMALL_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MODULATING_VLVE_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_1_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_2_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_3_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_4_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_5_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_DOSING_PUMP_6_PID_OUTPUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_TO_CIP_CIP_REQUEST").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_TO_CIP_ROUGHT_ACTIVE").Read & "', " & _
+    "'" & HMIRuntime.Tags("CIP_TO_RO_CIP_START").Read & "', " & _
+    "'" & HMIRuntime.Tags("CIP_TO_RO_CIP_RUNNING").Read & "', " & _
+    "'" & HMIRuntime.Tags("CIP_TO_RO_HOT_CYCLE").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_TO_O3_PUMP_RUNNING").Read & "', " & _
+    "'" & HMIRuntime.Tags("MIS_FEED_FLOW").Read & "', " & _
+    "'" & HMIRuntime.Tags("PST_LVL_SCALED_OUT").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_TO_CIP_TANK_LOW_LEVEL").Read & "', " & _
+    "'" & HMIRuntime.Tags("CIP_TO_RO_CIP_COMPLETE").Read & "', " & _
+    "'" & HMIRuntime.Tags("CIP_TO_RO_ALARM").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_RUNTIME").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_IDLE_TIME").Read & "', " & _
+    "'" & HMIRuntime.Tags("RO_DRAIN_TIME").Read & "')"
+
+Set rst = conn.Execute(SQL_Table)
+'MsgBox(Datum)
+'Close data source - Datenquelle schließen
+conn.close
+Set rst = Nothing
+Set conn = Nothing
