@@ -1,0 +1,7 @@
+tkinter
+tkcalendar
+pandas
+sqlalchemy
+openpyxl
+pillow
+pyodbc
